@@ -25,7 +25,7 @@ app.get('/pending', (req, res) => res.render('pending', req.query));
 // Webhooks
 app.post('/notifications', (req, res) => {
     res.send({ success: true, data: req.body });
-    console.log("Request body:", req.body);
+    console.log("Request:", req);
 });
 
 // Payment route
