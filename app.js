@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express'),
 mercadopago = require('mercadopago'),
 exphbs  = require('express-handlebars'),
-PORT = process.env.PORT || 5000,
+PORT = process.env.PORT || 3000,
 app = express();
 
 // Mercadopago config
@@ -14,13 +14,13 @@ mercadopago.configure({
 app.use(express.static('assets'));
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
+
+// Routes
 app.get('/', (req, res) => res.render('home'));
 app.get('/detail', (req, res) => res.render('detail', req.query));
 app.get('/success', (req, res) => res.render('success', req.query));
-app.get('/failure', (req, res) => res.render('failure'));
-app.get('/pending', (req, res) => res.render('pending'));
-app.use('/assets', express.static(__dirname + '/assets'));
-app.listen(PORT);
+app.get('/failure', (req, res) => res.render('failure', req.query));
+app.get('/pending', (req, res) => res.render('pending', req.query));
 
 // Webhooks
 app.post('/notifications', (req, res) => {
@@ -57,25 +57,20 @@ app.post('/payment', (req, res, next) => {
             }
         },
         payment_methods: {
-            excluded_payment_methods: [
-                {
-                    id: 'amex'
-                }
-            ],
-            excluded_payment_types: [
-                {
-                    id: 'atm'
-                }
-            ],
+            excluded_payment_methods: [{ id: 'amex' }],
+            excluded_payment_types: [{ id: 'atm' }],
             installments: 6
         },
         back_urls: {
-            success: 'https://dpotolicchio-mp-commerce-nodejs.herokuapp.com/success',
-            pending: 'https://dpotolicchio-mp-commerce-nodejs.herokuapp.com/failure',
-            failure: 'https://dpotolicchio-mp-commerce-nodejs.herokuapp.com/pending'
+            success: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/success',
+            pending: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/pending',
+            failure: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/failure'
         },
         auto_return: 'approved',
-        notification_url: 'https://dpotolicchio-mp-commerce-nodejs.herokuapp.com/notifications',
+        notification_url: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/notifications',
     };
     mercadopago.preferences.create(preference).then(response => res.redirect(response.body.init_point)).catch(err => next(err));
 });
+
+app.use('/assets', express.static(__dirname + '/assets'));
+app.listen(PORT);
