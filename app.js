@@ -12,6 +12,8 @@ mercadopago.configure({
 });
 
 app.use(express.static('assets'));
+app.use(express.json({limit: '20mb', extended: true})); // for parsing application/json
+app.use(express.urlencoded({ limit: '20mb', extended: true})); // for parsing application/x-www-form-urlencoded
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
