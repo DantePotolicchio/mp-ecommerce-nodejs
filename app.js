@@ -25,7 +25,7 @@ app.get('/pending', (req, res) => res.render('pending', req.query));
 // Webhooks
 app.post('/notifications', (req, res) => {
     res.send({ success: true, data: req.body });
-    console.log("Request:", req);
+    console.log('req.body', JSON.parse(req.body));
 });
 
 // Payment route
@@ -67,7 +67,7 @@ app.post('/payment', (req, res, next) => {
             failure: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/failure'
         },
         auto_return: 'approved',
-        notification_url: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/notifications',
+        notification_url: 'https://dpotolicchio-mp-commerce-nodej.herokuapp.com/notifications?source_news=webhooks',
     };
     mercadopago.preferences.create(preference).then(response => res.redirect(response.body.init_point)).catch(err => next(err));
 });
